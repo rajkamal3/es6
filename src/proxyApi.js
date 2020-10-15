@@ -26,18 +26,36 @@ console.clear();
 
 // Wrapping functions
 
-function log(message) {
-	console.log('Log entry created, message:' + message);
-}
+// function log(message) {
+// 	console.log('Log entry created, message:' + message);
+// }
+
+// let handler = {
+// 	apply: function (target, thisArg, argList) {
+// 		if (argList.length === 1) {
+// 			return Reflect.apply(target, thisArg, argList);
+// 		}
+// 	}
+// };
+
+// let proxy = new Proxy(log, handler);
+
+// proxy('hello', 'huell');
+
+// Revokable proxies
+
+let person = {
+	name: 'Max'
+};
 
 let handler = {
-	apply: function (target, thisArg, argList) {
-		if (argList.length === 1) {
-			return Reflect.apply(target, thisArg, argList);
-		}
+	get: function (target, property) {
+		return Reflect.get(target, property);
 	}
 };
 
-let proxy = new Proxy(log, handler);
+let { proxy, revoke } = Proxy.revocable(person, handler);
 
-proxy('hello', 'huell');
+revoke();
+
+console.log(proxy.name);
